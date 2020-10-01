@@ -10,7 +10,7 @@ class RetailerAdmin(admin.ModelAdmin):
 admin.site.register(Retailer, RetailerAdmin)
 
 class OfferingAdmin(admin.ModelAdmin):
-    list_display = ('id', 'retailer', 'price', 'content_type', 'object_id', 'content_object', 'show_url', 'disabled', 'created',)
+    list_display = ('id', 'retailer', 'price', 'content_type', 'content_object', 'show_url', 'disabled', 'created',)
     list_display_links = ('id', 'content_object')
     search_fields = ('build',)
     readonly_fields = ('created',)

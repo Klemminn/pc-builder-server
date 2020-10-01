@@ -9,7 +9,7 @@ class BuildAdmin(admin.ModelAdmin):
 admin.site.register(Build, BuildAdmin)
 
 class ComponentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'build', 'content_type', 'object_id', 'content_object', 'created',)
+    list_display = ('id', 'build', 'content_type', 'content_object', 'created',)
     search_fields = ('build',)
     readonly_fields = ('created',)
 
