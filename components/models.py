@@ -83,6 +83,21 @@ class Case(models.Model):
         return '%s - %s' % (self.name, self.motherboard_form_factor,)
 
 
+class Psu(models.Model):
+    id = models.AutoField(primary_key=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    name = models.CharField(max_length=100)
+    vendor = models.ForeignKey(Vendor, related_name='psus', to_field='code', on_delete=models.CASCADE)
+    psu_form_factor = models.ForeignKey(PsuFormFactor, related_name='psus', to_field='code', on_delete=models.CASCADE)
+    watts = models.IntegerField()
+    pcie_six_pin = models.IntegerField()
+    pcie_eight_pin = models.IntegerField()
+
+    def __str__(self):
+        return '%s - %s' % (self.name, self.motherboard_form_factor,)
+
+
 class Motherboard(models.Model):
     id = models.AutoField(primary_key=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -183,6 +198,8 @@ class Gpu(models.Model):
     core_clock = models.IntegerField()
     boost_clock = models.IntegerField()
     tdp = models.IntegerField()
+    pcie_six_pin = models.IntegerField()
+    pcie_eight_pin = models.IntegerField()
 
 
     def __str__(self):

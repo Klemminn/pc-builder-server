@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import MotherboardFormFactor, PsuFormFactor, MemoryType, CpuSocket, Vendor, MotherboardChipset, Case, Motherboard, Cpu, CpuCooler, CpuCoolerSocketConnection, Memory, GpuVendor, GpuType, Gpu, StorageType, Storage
+from .models import MotherboardFormFactor, PsuFormFactor, MemoryType, CpuSocket, Vendor, MotherboardChipset, Case, Psu, Motherboard, Cpu, CpuCooler, CpuCoolerSocketConnection, Memory, GpuVendor, GpuType, Gpu, StorageType, Storage
 
 
 class MotherboardFormFactorAdmin(admin.ModelAdmin):
@@ -56,6 +56,14 @@ class CaseAdmin(admin.ModelAdmin):
     readonly_fields = ('created',)
 
 admin.site.register(Case, CaseAdmin)
+
+
+class PsuAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'vendor', 'watts', 'psu_form_factor', 'pcie_six_pin', 'pcie_eight_pin', 'created',)
+    search_fields = ('name',)
+    readonly_fields = ('created',)
+
+admin.site.register(Psu, PsuAdmin)
 
 
 class MotherboardAdmin(admin.ModelAdmin):
@@ -115,7 +123,7 @@ admin.site.register(GpuType, GpuTypeAdmin)
 
 
 class GpuAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'vendor', 'type', 'memory', 'core_clock', 'boost_clock', 'tdp', 'created',)
+    list_display = ('id', 'name', 'vendor', 'type', 'memory', 'core_clock', 'boost_clock', 'tdp', 'pcie_six_pin', 'pcie_eight_pin', 'created',)
     search_fields = ('name',)
     readonly_fields = ('created',)
 
