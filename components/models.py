@@ -141,14 +141,6 @@ class CpuCooler(models.Model):
     fan_size = models.IntegerField(default=120)
 
 
-class CpuCoolerSocketConnection(models.Model):
-    id = models.AutoField(primary_key=True)
-    created = models.DateTimeField(auto_now_add=True)
-
-    socket = models.ForeignKey(CpuSocket, related_name='cpu_cooler_socket_connections', to_field='code', on_delete=models.CASCADE)
-    cooler = models.ForeignKey(CpuCooler, related_name='cpu_cooler_socket_connections', to_field='name', on_delete=models.CASCADE)
-
-
 class Memory(models.Model):
     id = models.AutoField(primary_key=True)
     created = models.DateTimeField(auto_now_add=True)

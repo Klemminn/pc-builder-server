@@ -4,6 +4,7 @@ colorama==0.4.3
 Django==3.1.2
 django-cors-headers==3.5.0
 djangorestframework==3.12.1
+djangorestframework-api-key==2.0.0
 djangorestframework-camel-case==1.2.0
 isort==5.5.4
 lazy-object-proxy==1.4.3

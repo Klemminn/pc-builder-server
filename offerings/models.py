@@ -19,11 +19,12 @@ class Offering(models.Model):
     id = models.AutoField(primary_key=True)
     created = models.DateTimeField(auto_now_add=True)
 
+    name = models.CharField(max_length=100)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True)
     object_id = models.PositiveIntegerField(null=True)
     content_object = GenericForeignKey('content_type', 'object_id')
     retailer = models.ForeignKey(Retailer, related_name='offerings', to_field='code', on_delete=models.CASCADE)
     price = models.IntegerField()
-    url = models.URLField()
-    disabled = models.BooleanField(null=True)
+    url = models.URLField(unique=True)
+    disabled = models.BooleanField(default=False)
 
