@@ -21,7 +21,7 @@ class Offering(models.Model):
 
     name = models.CharField(max_length=100)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True)
-    object_id = models.PositiveIntegerField(null=True)
+    object_id = models.PositiveIntegerField(null=True, blank=True)
     content_object = GenericForeignKey('content_type', 'object_id')
     retailer = models.ForeignKey(Retailer, related_name='offerings', to_field='code', on_delete=models.CASCADE)
     price = models.IntegerField()

@@ -21,7 +21,7 @@ class Update(APIView):
                 offering.price = price
                 offering.disabled = False
                 offering.save()
-                break
+                continue
             
             name = item.get('name')
             retailer_string = item.get('retailer')

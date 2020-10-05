@@ -1,5 +1,14 @@
 from django.db import models
+from builder.validators import validate_image_extension
+from builder.utils import handle_upload
 
+def ImageField():
+    return models.ImageField(
+        upload_to=handle_upload,
+        null=True,
+        blank=True,
+        validators=[validate_image_extension],
+    )
 
 class MotherboardFormFactor(models.Model):
     id = models.AutoField(primary_key=True)
@@ -78,9 +87,10 @@ class Case(models.Model):
     vendor = models.ForeignKey(Vendor, related_name='cases', to_field='code', on_delete=models.CASCADE)
     motherboard_form_factor = models.ForeignKey(MotherboardFormFactor, related_name='cases', to_field='code', on_delete=models.CASCADE)
     psu_form_factor = models.ForeignKey(PsuFormFactor, related_name='cases', to_field='code', on_delete=models.CASCADE)
+    image = ImageField()
 
     def __str__(self):
-        return '%s - %s' % (self.name, self.motherboard_form_factor,)
+        return '%s. %s - %s' % (self.id, self.name, self.motherboard_form_factor,)
 
 
 class Psu(models.Model):
@@ -93,9 +103,10 @@ class Psu(models.Model):
     watts = models.IntegerField()
     pcie_six_pin = models.IntegerField()
     pcie_eight_pin = models.IntegerField()
+    image = ImageField()
 
     def __str__(self):
-        return '%s - %s' % (self.name, self.motherboard_form_factor,)
+        return '%s. %s - %sW' % (self.id, self.name, self.watts,)
 
 
 class Motherboard(models.Model):
@@ -108,9 +119,10 @@ class Motherboard(models.Model):
     chipset = models.ForeignKey(MotherboardChipset, related_name='motherboards', to_field='code', on_delete=models.CASCADE)
     ram_slots = models.IntegerField(default=4)
     m2_slots = models.IntegerField(default=1)
+    image = ImageField()
 
     def __str__(self):
-        return '%s - %s' % (self.name, self.motherboard_form_factor,)
+        return '%s. %s - %s' % (self.id, self.name, self.motherboard_form_factor,)
 
 
 class Cpu(models.Model):
@@ -123,12 +135,13 @@ class Cpu(models.Model):
     cores = models.IntegerField(default=6)
     threads = models.IntegerField(default=6)
     core_clock = models.IntegerField()
-    boost_clock = models.IntegerField()
+    boost_clock = models.IntegerField(null=True, blank=True)
     tdp = models.IntegerField()
     graphics = models.CharField(null=True, blank=True, max_length=30)
+    image = ImageField()
 
     def __str__(self):
-        return '%s - %s' % (self.cpu_socket, self.name,)
+        return '%s. %s - %s' % (self.id, self.cpu_socket, self.name,)
 
 
 class CpuCooler(models.Model):
@@ -139,6 +152,10 @@ class CpuCooler(models.Model):
     vendor = models.ForeignKey(Vendor, related_name='cpu_coolers', to_field='code', on_delete=models.CASCADE)
     fans = models.IntegerField(default=1)
     fan_size = models.IntegerField(default=120)
+    image = ImageField()
+
+    def __str__(self):
+        return '%s. %s' % (self.id, self.name,)
 
 
 class Memory(models.Model):
@@ -151,9 +168,10 @@ class Memory(models.Model):
     frequency = models.IntegerField(default=2400)
     type = models.ForeignKey(MemoryType, related_name='memory', to_field='code', on_delete=models.CASCADE)
     cas = models.IntegerField(default=16)
+    image = ImageField()
 
     def __str__(self):
-        return '%s - %s' % (self.type, self.name,)
+        return '%s. %s - %s' % (self.id, self.type, self.name,)
 
 
 class GpuVendor(models.Model):
@@ -186,16 +204,13 @@ class Gpu(models.Model):
     name = models.CharField(max_length=100)
     vendor = models.ForeignKey(Vendor, related_name='gpus', to_field='code', on_delete=models.CASCADE)
     type = models.ForeignKey(GpuType, related_name='gpus', to_field='code', on_delete=models.CASCADE)
-    memory = models.IntegerField()
-    core_clock = models.IntegerField()
-    boost_clock = models.IntegerField()
-    tdp = models.IntegerField()
     pcie_six_pin = models.IntegerField()
     pcie_eight_pin = models.IntegerField()
+    image = ImageField()
 
 
     def __str__(self):
-        return '%s - %s' % (self.type, self.name,)
+        return '%s. %s - %s' % (self.id, self.type, self.name,)
 
 
 class StorageType(models.Model):
@@ -217,8 +232,9 @@ class Storage(models.Model):
     vendor = models.ForeignKey(Vendor, related_name='storages', to_field='code', on_delete=models.CASCADE)
     type = models.ForeignKey(StorageType, related_name='storages', to_field='code', on_delete=models.CASCADE)
     capacity = models.IntegerField()
-    read_speed = models.IntegerField()
-    write_speed = models.IntegerField()
+    read_speed = models.IntegerField(null=True, blank=True)
+    write_speed = models.IntegerField(null=True, blank=True)
+    image = ImageField()
 
     def __str__(self):
-        return '%s - %s' % (self.type, self.name,)
+        return '%s. %s - %s' % (self.id, self.type, self.name,)

@@ -87,7 +87,7 @@ class GpuTypeAdmin(admin.ModelAdmin):
 
 @admin.register(Gpu)
 class GpuAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'vendor', 'type', 'memory', 'core_clock', 'boost_clock', 'tdp', 'pcie_six_pin', 'pcie_eight_pin', 'created',)
+    list_display = ('id', 'name', 'vendor', 'type', 'pcie_six_pin', 'pcie_eight_pin', 'created',)
     search_fields = ('name',)
     readonly_fields = ('created',)
 
