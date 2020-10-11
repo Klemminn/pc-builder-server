@@ -12,9 +12,10 @@ class RetailerAdmin(admin.ModelAdmin):
 class OfferingAdmin(admin.ModelAdmin):
     list_display = ('id', 'retailer', 'name', 'price', 'content_type', 'object_id', 'content_object', 'show_url', 'disabled', 'created',)
     list_display_links = ('id', 'name',)
-    list_editable = ('object_id',)
+    list_editable = ('object_id', 'disabled',)
     search_fields = ('name',)
     readonly_fields = ('created',)
+    list_filter = (('content_type', admin.RelatedOnlyFieldListFilter,),)
 
     def show_url(self, obj):
         return format_html("<a href='{url}'>{url}</a>", url=obj.url)

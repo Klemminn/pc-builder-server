@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import MotherboardFormFactor, PsuFormFactor, MemoryType, CpuSocket, Vendor, MotherboardChipset, Case, Psu, Motherboard, Cpu, CpuCooler, Memory, GpuVendor, GpuType, Gpu, StorageType, Storage
+from .models import MotherboardFormFactor, PsuFormFactor, MemoryType, CpuSocket, Vendor, MotherboardChipset, Case, Psu, Motherboard, Cpu, CpuCooler, Memory, GpuVendor, GpuType, Gpu, SsdType, Ssd, Hdd
 
 @admin.register(MotherboardFormFactor)
 class MotherboardFormFactorAdmin(admin.ModelAdmin):
@@ -58,6 +58,7 @@ class MotherboardAdmin(admin.ModelAdmin):
 @admin.register(Cpu)
 class CpuAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'vendor', 'cpu_socket', 'cores', 'threads', 'core_clock', 'boost_clock', 'tdp', 'graphics', 'created',)
+    list_editable = ('name',)
     search_fields = ('name',)
     readonly_fields = ('created',)
 
@@ -69,7 +70,8 @@ class CpuCoolerAdmin(admin.ModelAdmin):
 
 @admin.register(Memory)
 class MemoryAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'vendor', 'modules', 'frequency', 'type', 'cas', 'created',)
+    list_display = ('id', 'name', 'vendor', 'modules', 'size', 'frequency', 'type', 'cas', 'created',)
+    list_editable = ('name', 'modules', 'size', 'frequency',)
     search_fields = ('name',)
     readonly_fields = ('created',)
 
@@ -91,14 +93,20 @@ class GpuAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     readonly_fields = ('created',)
 
-@admin.register(StorageType)
-class StorageTypeAdmin(admin.ModelAdmin):
+@admin.register(SsdType)
+class SsdTypeAdmin(admin.ModelAdmin):
     list_display = ('id', 'code', 'name', 'created',)
     search_fields = ('name',)
     readonly_fields = ('created',)
 
-@admin.register(Storage)
-class StorageAdmin(admin.ModelAdmin):
+@admin.register(Ssd)
+class SsdAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'vendor', 'type', 'capacity', 'read_speed', 'write_speed', 'created',)
+    search_fields = ('name',)
+    readonly_fields = ('created',)
+
+@admin.register(Hdd)
+class SsdAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'vendor', 'format', 'capacity', 'created',)
     search_fields = ('name',)
     readonly_fields = ('created',)

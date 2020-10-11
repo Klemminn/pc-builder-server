@@ -1,6 +1,9 @@
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from builder.validators import validate_image_extension
 from builder.utils import handle_upload
+
+from offerings.models import Offering
 
 def ImageField():
     return models.ImageField(
@@ -79,36 +82,6 @@ class MotherboardChipset(models.Model):
         return self.name
 
 
-class Case(models.Model):
-    id = models.AutoField(primary_key=True)
-    created = models.DateTimeField(auto_now_add=True)
-
-    name = models.CharField(max_length=100)
-    vendor = models.ForeignKey(Vendor, related_name='cases', to_field='code', on_delete=models.CASCADE)
-    motherboard_form_factor = models.ForeignKey(MotherboardFormFactor, related_name='cases', to_field='code', on_delete=models.CASCADE)
-    psu_form_factor = models.ForeignKey(PsuFormFactor, related_name='cases', to_field='code', on_delete=models.CASCADE)
-    image = ImageField()
-
-    def __str__(self):
-        return '%s. %s - %s' % (self.id, self.name, self.motherboard_form_factor,)
-
-
-class Psu(models.Model):
-    id = models.AutoField(primary_key=True)
-    created = models.DateTimeField(auto_now_add=True)
-
-    name = models.CharField(max_length=100)
-    vendor = models.ForeignKey(Vendor, related_name='psus', to_field='code', on_delete=models.CASCADE)
-    psu_form_factor = models.ForeignKey(PsuFormFactor, related_name='psus', to_field='code', on_delete=models.CASCADE)
-    watts = models.IntegerField()
-    pcie_six_pin = models.IntegerField()
-    pcie_eight_pin = models.IntegerField()
-    image = ImageField()
-
-    def __str__(self):
-        return '%s. %s - %sW' % (self.id, self.name, self.watts,)
-
-
 class Motherboard(models.Model):
     id = models.AutoField(primary_key=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -120,6 +93,7 @@ class Motherboard(models.Model):
     ram_slots = models.IntegerField(default=4)
     m2_slots = models.IntegerField(default=1)
     image = ImageField()
+    offerings = GenericRelation(Offering)
 
     def __str__(self):
         return '%s. %s - %s' % (self.id, self.name, self.motherboard_form_factor,)
@@ -139,6 +113,7 @@ class Cpu(models.Model):
     tdp = models.IntegerField()
     graphics = models.CharField(null=True, blank=True, max_length=30)
     image = ImageField()
+    offerings = GenericRelation(Offering)
 
     def __str__(self):
         return '%s. %s - %s' % (self.id, self.cpu_socket, self.name,)
@@ -153,6 +128,7 @@ class CpuCooler(models.Model):
     fans = models.IntegerField(default=1)
     fan_size = models.IntegerField(default=120)
     image = ImageField()
+    offerings = GenericRelation(Offering)
 
     def __str__(self):
         return '%s. %s' % (self.id, self.name,)
@@ -165,10 +141,12 @@ class Memory(models.Model):
     name = models.CharField(max_length=100)
     vendor = models.ForeignKey(Vendor, related_name='memory', to_field='code', on_delete=models.CASCADE)
     modules = models.IntegerField(default=2)
+    size = models.IntegerField(default=8)
     frequency = models.IntegerField(default=2400)
     type = models.ForeignKey(MemoryType, related_name='memory', to_field='code', on_delete=models.CASCADE)
     cas = models.IntegerField(default=16)
     image = ImageField()
+    offerings = GenericRelation(Offering)
 
     def __str__(self):
         return '%s. %s - %s' % (self.id, self.type, self.name,)
@@ -180,6 +158,7 @@ class GpuVendor(models.Model):
 
     code = models.CharField(max_length=20, unique=True)
     name = models.CharField(max_length=20)
+    offerings = GenericRelation(Offering)
 
     def __str__(self):
         return self.name
@@ -207,13 +186,14 @@ class Gpu(models.Model):
     pcie_six_pin = models.IntegerField()
     pcie_eight_pin = models.IntegerField()
     image = ImageField()
+    offerings = GenericRelation(Offering)
 
 
     def __str__(self):
         return '%s. %s - %s' % (self.id, self.type, self.name,)
 
 
-class StorageType(models.Model):
+class SsdType(models.Model):
     id = models.AutoField(primary_key=True)
     created = models.DateTimeField(auto_now_add=True)
 
@@ -224,17 +204,69 @@ class StorageType(models.Model):
         return self.name
 
 
-class Storage(models.Model):
+class Ssd(models.Model):
     id = models.AutoField(primary_key=True)
     created = models.DateTimeField(auto_now_add=True)
 
     name = models.CharField(max_length=100)
-    vendor = models.ForeignKey(Vendor, related_name='storages', to_field='code', on_delete=models.CASCADE)
-    type = models.ForeignKey(StorageType, related_name='storages', to_field='code', on_delete=models.CASCADE)
+    vendor = models.ForeignKey(Vendor, related_name='ssds', to_field='code', on_delete=models.CASCADE)
+    type = models.ForeignKey(SsdType, related_name='ssds', to_field='code', on_delete=models.CASCADE)
     capacity = models.IntegerField()
     read_speed = models.IntegerField(null=True, blank=True)
     write_speed = models.IntegerField(null=True, blank=True)
     image = ImageField()
+    offerings = GenericRelation(Offering)
 
     def __str__(self):
         return '%s. %s - %s' % (self.id, self.type, self.name,)
+
+
+class Hdd(models.Model):
+    id = models.AutoField(primary_key=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    name = models.CharField(max_length=100)
+    vendor = models.ForeignKey(Vendor, related_name='hdds', to_field='code', on_delete=models.CASCADE)
+    FORMAT_CHOICES = [
+        ('3.5"', '3.5"'),
+        ('2.5"', '2.5"'),
+    ]
+    format = models.CharField(max_length=20, choices=FORMAT_CHOICES, default=FORMAT_CHOICES[0])
+    capacity = models.IntegerField()
+    image = ImageField()
+    offerings = GenericRelation(Offering)
+
+    def __str__(self):
+        return '%s. %s - %s' % (self.id, self.format, self.name,)
+
+
+class Case(models.Model):
+    id = models.AutoField(primary_key=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    name = models.CharField(max_length=100)
+    vendor = models.ForeignKey(Vendor, related_name='cases', to_field='code', on_delete=models.CASCADE)
+    motherboard_form_factor = models.ForeignKey(MotherboardFormFactor, related_name='cases', to_field='code', on_delete=models.CASCADE)
+    psu_form_factor = models.ForeignKey(PsuFormFactor, related_name='cases', to_field='code', on_delete=models.CASCADE)
+    image = ImageField()
+    offerings = GenericRelation(Offering)
+
+    def __str__(self):
+        return '%s. %s - %s' % (self.id, self.name, self.motherboard_form_factor,)
+
+
+class Psu(models.Model):
+    id = models.AutoField(primary_key=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    name = models.CharField(max_length=100)
+    vendor = models.ForeignKey(Vendor, related_name='psus', to_field='code', on_delete=models.CASCADE)
+    psu_form_factor = models.ForeignKey(PsuFormFactor, related_name='psus', to_field='code', on_delete=models.CASCADE)
+    watts = models.IntegerField()
+    pcie_six_pin = models.IntegerField()
+    pcie_eight_pin = models.IntegerField()
+    image = ImageField()
+    offerings = GenericRelation(Offering)
+
+    def __str__(self):
+        return '%s. %s - %sW' % (self.id, self.name, self.watts,)
