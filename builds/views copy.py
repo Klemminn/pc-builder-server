@@ -10,23 +10,19 @@ from django.db.models import Prefetch, Count, Min
 
 from .models import Offering, Retailer
 from components.models import Motherboard, Cpu, CpuCooler, Memory, Gpu, Ssd, Hdd, Case, Psu
-from components.serializers import CpuSerializer, MemorySerializer, CpuCoolerSerializer, MotherboardSerializer, GpuSerializer, SsdSerializer, HddSerializer, CaseSerializer, PsuSerializer
+from components.serializers import CpuSerializer, MemorySerializer, CpuCoolerSerializer, GpuSerializer, SsdSerializer, HddSerializer, CaseSerializer, PsuSerializer
 
 def flatten(listable):
     return list(chain(*listable))
 
-def get_components(model):
-    components = model.objects.prefetch_related(Prefetch('offerings', queryset=Offering.objects.filter(disabled=False).order_by('price'))).filter(offerings__disabled=False)
-    items = components.annotate(min_price=Min('offerings__price'))
-    return [components, items]
-
 def get_common(model):
-    [components, items] = get_components(model)
+    components = model.objects.prefetch_related(Prefetch('offerings', queryset=Offering.objects.filter(disabled=False).order_by('price'))).filter(offerings__disabled=False)
+    items = components.annotate(min_price=Min('offerings__price')).order_by('min_price')
     vendors = flatten(components.values_list('vendor__name').distinct())
     retailers = flatten(components.values_list('offerings__retailer__name').distinct())
     return {
         'components': components,
-        'items': items.order_by('min_price'),
+        'items': items,
         'vendors': vendors,
         'retailers': retailers,
     }
@@ -53,21 +49,6 @@ class GetCpuCooler(APIView):
             'fans': fans,
             'fan_size': fan_sizes,
             'items': CpuCoolerSerializer(common.get('items'), many=True).data,
-        })
-
-class GetMotherboard(APIView):
-    def get(self, request, format=None):
-        common = get_common(Motherboard)
-        cpu_sockets = flatten(common.get('components').values_list('chipset__cpu_socket__name').order_by('chipset__cpu_socket__name').distinct())
-        chipsets = flatten(common.get('components').values_list('chipset__name').order_by('chipset__name').distinct())
-        motherboard_form_factors = flatten(common.get('components').values_list('motherboard_form_factor__name').order_by('motherboard_form_factor__name').distinct())
-        return Response({
-            'vendor': common.get('vendors'),
-            'retailer': common.get('retailers'),
-            'cpu_socket': cpu_sockets,
-            'chipset': chipsets,
-            'motherboard_form_factor': motherboard_form_factors,
-            'items': MotherboardSerializer(common.get('items'), many=True).data,
         })
 
 class GetMemory(APIView):

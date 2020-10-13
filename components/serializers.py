@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Cpu, CpuCooler, Memory, Gpu, Ssd, Hdd, Case, Psu
+from .models import Cpu, CpuCooler, Motherboard, Memory, Gpu, Ssd, Hdd, Case, Psu
 from offerings.serializers import OfferingSerializer
 
 class CpuSerializer(serializers.ModelSerializer):
@@ -19,6 +19,17 @@ class CpuCoolerSerializer(serializers.ModelSerializer):
     class Meta:
         model = CpuCooler
         fields = ('id', 'vendor', 'name', 'fans', 'fan_size', 'image', 'min_price', 'offerings',)
+
+class MotherboardSerializer(serializers.ModelSerializer):
+    vendor = serializers.ReadOnlyField(source='vendor.name')
+    motherboard_form_factor = serializers.ReadOnlyField(source='motherboard_form_factor.name')
+    cpu_socket = serializers.ReadOnlyField(source='chipset.cpu_socket.name')
+    chipset = serializers.ReadOnlyField(source='chipset.name')
+    offerings = OfferingSerializer(many=True, read_only=True)
+    min_price = serializers.IntegerField()
+    class Meta:
+        model = Motherboard
+        fields = ('id', 'vendor', 'name', 'motherboard_form_factor', 'cpu_socket', 'chipset', 'ram_slots', 'm2_slots', 'image', 'min_price', 'offerings',)
 
 class MemorySerializer(serializers.ModelSerializer):
     vendor = serializers.ReadOnlyField(source='vendor.name')

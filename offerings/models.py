@@ -13,6 +13,9 @@ class Retailer(models.Model):
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        ordering = ('code',)
 
 
 class Offering(models.Model):
@@ -27,4 +30,11 @@ class Offering(models.Model):
     price = models.IntegerField()
     url = models.URLField(unique=True)
     disabled = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ('price',)
+        indexes = [
+            models.Index(fields=['price',]),
+            models.Index(fields=['disabled',]),
+        ]
 

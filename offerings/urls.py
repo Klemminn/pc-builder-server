@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
-from .views import Update, GetCpu, GetMemory, GetCpuCooler, GetGpu, GetSsd, GetHdd, GetCase, GetPsu
+from .views import Update, GetCpu, GetCpuCooler, GetMotherboard, GetMemory, GetGpu, GetSsd, GetHdd, GetCase, GetPsu
 
 urlpatterns = format_suffix_patterns([
     path(
@@ -17,6 +17,11 @@ urlpatterns = format_suffix_patterns([
         'cpuCooler/',
         GetCpuCooler.as_view(),
         name='get-cpu-cooler'
+    ),
+    path(
+        'motherboard/',
+        GetMotherboard.as_view(),
+        name='get-motherboard'
     ),
     path(
         'memory/',

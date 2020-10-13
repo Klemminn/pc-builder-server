@@ -22,6 +22,9 @@ class MotherboardFormFactor(models.Model):
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        ordering = ('code',)
 
 
 class PsuFormFactor(models.Model):
@@ -34,6 +37,9 @@ class PsuFormFactor(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ('code',)
+
 
 class MemoryType(models.Model):
     id = models.AutoField(primary_key=True)
@@ -44,6 +50,9 @@ class MemoryType(models.Model):
     
     def __str__(self):
         return self.name
+    
+    class Meta:
+        ordering = ('code',)
 
 
 class CpuSocket(models.Model):
@@ -55,6 +64,9 @@ class CpuSocket(models.Model):
 
     def __str__(self):
         return '%s - %s' % (self.code, self.name,)
+    
+    class Meta:
+        ordering = ('code',)
 
 
 class Vendor(models.Model):
@@ -80,23 +92,6 @@ class MotherboardChipset(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class Motherboard(models.Model):
-    id = models.AutoField(primary_key=True)
-    created = models.DateTimeField(auto_now_add=True)
-
-    name = models.CharField(max_length=100)
-    vendor = models.ForeignKey(Vendor, related_name='motherboards', to_field='code', on_delete=models.CASCADE)
-    motherboard_form_factor = models.ForeignKey(MotherboardFormFactor, related_name='motherboards', to_field='code', on_delete=models.CASCADE)
-    chipset = models.ForeignKey(MotherboardChipset, related_name='motherboards', to_field='code', on_delete=models.CASCADE)
-    ram_slots = models.IntegerField(default=4)
-    m2_slots = models.IntegerField(default=1)
-    image = ImageField()
-    offerings = GenericRelation(Offering)
-
-    def __str__(self):
-        return '%s. %s - %s' % (self.id, self.name, self.motherboard_form_factor,)
 
 
 class Cpu(models.Model):
@@ -134,6 +129,23 @@ class CpuCooler(models.Model):
         return '%s. %s' % (self.id, self.name,)
 
 
+class Motherboard(models.Model):
+    id = models.AutoField(primary_key=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    name = models.CharField(max_length=100)
+    vendor = models.ForeignKey(Vendor, related_name='motherboards', to_field='code', on_delete=models.CASCADE)
+    motherboard_form_factor = models.ForeignKey(MotherboardFormFactor, related_name='motherboards', to_field='code', on_delete=models.CASCADE)
+    chipset = models.ForeignKey(MotherboardChipset, related_name='motherboards', to_field='code', on_delete=models.CASCADE)
+    ram_slots = models.IntegerField(default=4)
+    m2_slots = models.IntegerField(default=1)
+    image = ImageField()
+    offerings = GenericRelation(Offering)
+
+    def __str__(self):
+        return '%s. %s - %s' % (self.id, self.name, self.motherboard_form_factor,)
+
+
 class Memory(models.Model):
     id = models.AutoField(primary_key=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -163,6 +175,8 @@ class GpuVendor(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ('code',)
 
 class GpuType(models.Model):
     id = models.AutoField(primary_key=True)
@@ -174,6 +188,9 @@ class GpuType(models.Model):
     
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ('code',)
 
 
 class Gpu(models.Model):
@@ -202,6 +219,9 @@ class SsdType(models.Model):
     
     def __str__(self):
         return self.name
+    
+    class Meta:
+        ordering = ('code',)
 
 
 class Ssd(models.Model):
