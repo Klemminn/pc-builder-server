@@ -15,13 +15,9 @@ from components.serializers import CpuSerializer, MemorySerializer, CpuCoolerSer
 def flatten(listable):
     return list(chain(*listable))
 
-def get_components(model):
+def get_common(model):
     components = model.objects.prefetch_related(Prefetch('offerings', queryset=Offering.objects.filter(disabled=False).order_by('price'))).filter(offerings__disabled=False)
     items = components.annotate(min_price=Min('offerings__price'))
-    return [components, items]
-
-def get_common(model):
-    [components, items] = get_components(model)
     vendors = flatten(components.values_list('vendor__name').distinct())
     retailers = flatten(components.values_list('offerings__retailer__name').distinct())
     return {

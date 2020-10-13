@@ -1,14 +1,20 @@
+import re
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.contenttypes.models import ContentType
-import re
+from django.db.models import Prefetch, Count, Min
 
 from .models import Build
 from offerings.models import Offering
 from components.serializers import CpuSerializer, CpuCoolerSerializer, MotherboardSerializer, MemorySerializer, GpuSerializer, SsdSerializer, HddSerializer, CaseSerializer, PsuSerializer
-from offerings.views import get_components
 from offerings.serializers import OfferingSerializer
+
+def get_component(model,):
+    components = model.objects.prefetch_related(Prefetch('offerings', queryset=Offering.objects.order_by('price')))
+    items = components.annotate(min_price=Min('offerings__price'))
+    return [components, items]
+
 
 component_serializers = {
     'cpu': CpuSerializer,
@@ -35,11 +41,11 @@ class GetBuild(APIView):
         }
         for offering in offerings:
             component = offering.content_object
-            component_type = model_to_snake(type(component))
+            model = type(component)
+            component_type = model_to_snake(model)
 
-            [components, items] = get_components(type(component))
-            full_component = items.get(id=component.id)
-            
+            full_component = model.objects.annotate(min_price=Min('offerings__price')).get(id=component.id)
+
             component_serialized = component_serializers[component_type](full_component)
             extended_data = { 'selected_offering': OfferingSerializer(offering).data }
             extended_data.update(component_serialized.data)
