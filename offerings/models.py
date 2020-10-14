@@ -32,7 +32,6 @@ class Offering(models.Model):
     disabled = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ('price',)
         indexes = [
             models.Index(fields=['price',]),
             models.Index(fields=['disabled',]),
