@@ -135,13 +135,14 @@ class GetPsu(APIView):
     def get(self, request, format=None):
         common = get_common(Psu)
         psu_form_factors = flatten(common.get('components').values_list('psu_form_factor__name').order_by('psu_form_factor__name').distinct())
-        watts = flatten(common.get('components').values_list('ratings').order_by('ratings').distinct())
+        ratings = flatten(common.get('components').values_list('rating').order_by('rating').distinct())
         watts = flatten(common.get('components').values_list('watts').order_by('watts').distinct())
         return Response({
             'vendor': common.get('vendors'),
             'retailer': common.get('retailers'),
             'psu_form_factor': psu_form_factors,
             'watts': watts,
+            'rating': ratings,
             'items': PsuSerializer(common.get('items'), many=True).data,
         })
 
