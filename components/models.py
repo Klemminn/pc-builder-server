@@ -282,6 +282,16 @@ class Psu(models.Model):
     name = models.CharField(max_length=100)
     vendor = models.ForeignKey(Vendor, related_name='psus', to_field='code', on_delete=models.CASCADE)
     psu_form_factor = models.ForeignKey(PsuFormFactor, related_name='psus', to_field='code', on_delete=models.CASCADE)
+    RATING_CHOICES = [
+        ('none', ''),
+        ('white', '80 Plus'),
+        ('bronze', '80 Plus Bronze'),
+        ('silver', '80 Plus Silver'),
+        ('gold', '80 Plus Gold'),
+        ('platinum', '80 Plus Platinum'),
+        ('titanium', '80 Plus Titanium'),
+    ]
+    rating = models.CharField(max_length=20, choices=RATING_CHOICES, default=RATING_CHOICES[0])
     watts = models.IntegerField()
     pcie_six_pin = models.IntegerField()
     pcie_eight_pin = models.IntegerField()

@@ -45,7 +45,7 @@ class CaseAdmin(admin.ModelAdmin):
 
 @admin.register(Psu)
 class PsuAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'vendor', 'watts', 'psu_form_factor', 'pcie_six_pin', 'pcie_eight_pin', 'created',)
+    list_display = ('id', 'name', 'vendor', 'watts', 'rating', 'psu_form_factor', 'pcie_six_pin', 'pcie_eight_pin', 'created',)
     search_fields = ('name',)
     readonly_fields = ('created',)
 

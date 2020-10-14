@@ -89,4 +89,4 @@ class PsuSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Psu
-        fields = ('id', 'vendor', 'name', 'watts', 'psu_form_factor', 'pcie_six_pin', 'pcie_eight_pin', 'image', 'min_price', 'offerings',)
+        fields = ('id', 'vendor', 'name', 'watts', 'psu_form_factor', 'rating', 'pcie_six_pin', 'pcie_eight_pin', 'image', 'min_price', 'offerings',)
