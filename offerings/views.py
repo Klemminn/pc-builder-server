@@ -15,11 +15,14 @@ from components.serializers import CpuSerializer, MemorySerializer, CpuCoolerSer
 def flatten(listable):
     return list(chain(*listable))
 
+def get_distinct_property(components, property):
+    return flatten(components.values_list(property).order_by(property).distinct())
+
 def get_common(model):
     components = model.objects.prefetch_related(Prefetch('offerings', queryset=Offering.objects.filter(disabled=False).order_by('price'))).filter(offerings__disabled=False)
     items = components.annotate(min_price=Min('offerings__price'))
-    vendors = flatten(components.values_list('vendor__name').distinct())
-    retailers = flatten(components.values_list('offerings__retailer__name').distinct())
+    vendors = get_distinct_property(components, 'vendor__name')
+    retailers = get_distinct_property(components, 'offerings__retailer__name')
     return {
         'components': components,
         'items': items.order_by('min_price'),
@@ -30,7 +33,7 @@ def get_common(model):
 class GetCpu(APIView):
     def get(self, request, format=None):
         common = get_common(Cpu)
-        cpu_sockets = flatten(common.get('components').values_list('cpu_socket__name').distinct())
+        cpu_sockets = get_distinct_property(common.get('components'), 'cpu_socket__name')
         return Response({
             'vendor': common.get('vendors'),
             'retailer': common.get('retailers'),
@@ -41,8 +44,8 @@ class GetCpu(APIView):
 class GetCpuCooler(APIView):
     def get(self, request, format=None):
         common = get_common(CpuCooler)
-        fan_sizes = flatten(common.get('components').values_list('fan_size').order_by('fan_size').distinct())
-        fans = flatten(common.get('components').values_list('fans').order_by('fans').distinct())
+        fan_sizes = get_distinct_property(common.get('components'), 'fan_size')
+        fans = get_distinct_property(common.get('components'), 'fans')
         return Response({
             'vendor': common.get('vendors'),
             'retailer': common.get('retailers'),
@@ -54,9 +57,9 @@ class GetCpuCooler(APIView):
 class GetMotherboard(APIView):
     def get(self, request, format=None):
         common = get_common(Motherboard)
-        cpu_sockets = flatten(common.get('components').values_list('chipset__cpu_socket__name').order_by('chipset__cpu_socket__name').distinct())
-        chipsets = flatten(common.get('components').values_list('chipset__name').order_by('chipset__name').distinct())
-        motherboard_form_factors = flatten(common.get('components').values_list('motherboard_form_factor__name').order_by('motherboard_form_factor__name').distinct())
+        cpu_sockets = get_distinct_property(common.get('components'), 'chipset__cpu_socket__name')
+        chipsets = get_distinct_property(common.get('components'), 'chipset__name')
+        motherboard_form_factors = get_distinct_property(common.get('components'), 'motherboard_form_factor__name')
         return Response({
             'vendor': common.get('vendors'),
             'retailer': common.get('retailers'),
@@ -69,9 +72,9 @@ class GetMotherboard(APIView):
 class GetMemory(APIView):
     def get(self, request, format=None):
         common = get_common(Memory)
-        types = flatten(common.get('components').values_list('type__name').distinct())
-        frequency = flatten(common.get('components').values_list('frequency').order_by('frequency').distinct())
-        sizes = flatten(common.get('components').values_list('size').order_by('size').distinct())
+        types = get_distinct_property(common.get('components'), 'type__name')
+        frequency = get_distinct_property(common.get('components'), 'frequency')
+        sizes = get_distinct_property(common.get('components'), 'size')
         return Response({
             'vendor': common.get('vendors'),
             'retailer': common.get('retailers'),
@@ -84,7 +87,7 @@ class GetMemory(APIView):
 class GetGpu(APIView):
     def get(self, request, format=None):
         common = get_common(Gpu)
-        types = flatten(common.get('components').values_list('type__name').order_by('type__name').distinct())
+        types = get_distinct_property(common.get('components'), 'type__name')
         return Response({
             'vendor': common.get('vendors'),
             'retailer': common.get('retailers'),
@@ -95,8 +98,8 @@ class GetGpu(APIView):
 class GetSsd(APIView):
     def get(self, request, format=None):
         common = get_common(Ssd)
-        types = flatten(common.get('components').values_list('type__name').order_by('type__name').distinct())
-        capacity = flatten(common.get('components').values_list('capacity').order_by('capacity').distinct())
+        types = get_distinct_property(common.get('components'), 'type__name')
+        capacity = get_distinct_property(common.get('components'), 'capacity')
         return Response({
             'vendor': common.get('vendors'),
             'retailer': common.get('retailers'),
@@ -108,8 +111,8 @@ class GetSsd(APIView):
 class GetHdd(APIView):
     def get(self, request, format=None):
         common = get_common(Hdd)
-        formats = flatten(common.get('components').values_list('format').order_by('format').distinct())
-        capacity = flatten(common.get('components').values_list('capacity').order_by('capacity').distinct())
+        formats = get_distinct_property(common.get('components'), 'format')
+        capacity = get_distinct_property(common.get('components'), 'capacity')
         return Response({
             'vendor': common.get('vendors'),
             'retailer': common.get('retailers'),
@@ -121,8 +124,8 @@ class GetHdd(APIView):
 class GetCase(APIView):
     def get(self, request, format=None):
         common = get_common(Case)
-        motherboard_form_factors = flatten(common.get('components').values_list('motherboard_form_factor__name').order_by('motherboard_form_factor__name').distinct())
-        psu_form_factors = flatten(common.get('components').values_list('psu_form_factor__name').order_by('psu_form_factor__name').distinct())
+        motherboard_form_factors = get_distinct_property(common.get('components'), 'motherboard_form_factor__name')
+        psu_form_factors = get_distinct_property(common.get('components'), 'psu_form_factor__name')
         return Response({
             'vendor': common.get('vendors'),
             'retailer': common.get('retailers'),
@@ -134,9 +137,9 @@ class GetCase(APIView):
 class GetPsu(APIView):
     def get(self, request, format=None):
         common = get_common(Psu)
-        psu_form_factors = flatten(common.get('components').values_list('psu_form_factor__name').order_by('psu_form_factor__name').distinct())
-        ratings = flatten(common.get('components').values_list('rating').order_by('rating').distinct())
-        watts = flatten(common.get('components').values_list('watts').order_by('watts').distinct())
+        psu_form_factors = get_distinct_property(common.get('components'), 'psu_form_factor__name')
+        ratings = flatten(common.get('components').filter(rating__isnull=False).values_list('rating').order_by('rating').distinct())
+        watts = get_distinct_property(common.get('components'), 'watts')
         return Response({
             'vendor': common.get('vendors'),
             'retailer': common.get('retailers'),
