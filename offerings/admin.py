@@ -18,6 +18,6 @@ class OfferingAdmin(admin.ModelAdmin):
     list_filter = (('content_type', admin.RelatedOnlyFieldListFilter,),)
 
     def show_url(self, obj):
-        return format_html("<a href='{url}'>{url}</a>", url=obj.url)
+        return format_html("<a href='{url}' target='__blank'>{url}</a>", url=obj.url)
 
     show_url.short_description = "Url"

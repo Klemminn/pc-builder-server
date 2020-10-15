@@ -138,6 +138,7 @@ class GetPsu(APIView):
     def get(self, request, format=None):
         common = get_common(Psu)
         psu_form_factors = get_distinct_property(common.get('components'), 'psu_form_factor__name')
+        # We do ratings manually here, instead of using get_distinct, since we want to filter out the null result
         ratings = flatten(common.get('components').filter(rating__isnull=False).values_list('rating').order_by('rating').distinct())
         watts = get_distinct_property(common.get('components'), 'watts')
         return Response({
