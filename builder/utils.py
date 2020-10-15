@@ -18,7 +18,7 @@ def create_thumbnail(image_file, filename, height):
     return image_buffer
 
 def handle_upload(instance, filename):
-    small_height = 200
+    small_height = 100
     uid = uuid.uuid4()
     file_type = filename.split('.')[-1]
     placement_key = 'components/%s' % (uid,)
