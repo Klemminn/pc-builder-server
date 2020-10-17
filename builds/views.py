@@ -10,12 +10,6 @@ from offerings.models import Offering
 from components.serializers import CpuSerializer, CpuCoolerSerializer, MotherboardSerializer, MemorySerializer, GpuSerializer, SsdSerializer, HddSerializer, CaseSerializer, PsuSerializer
 from offerings.serializers import OfferingSerializer
 
-def get_component(model,):
-    components = model.objects.prefetch_related(Prefetch('offerings', queryset=Offering.objects.order_by('price')))
-    items = components.annotate(min_price=Min('offerings__price'))
-    return [components, items]
-
-
 component_serializers = {
     'cpu': CpuSerializer,
     'cpu_cooler': CpuCoolerSerializer,
@@ -44,7 +38,7 @@ class GetBuild(APIView):
             model = type(component)
             component_type = model_to_snake(model)
 
-            full_component = model.objects.annotate(min_price=Min('offerings__price')).get(id=component.id)
+            full_component = model.objects.prefetch_related(Prefetch('offerings', queryset=Offering.objects.order_by('price'))).annotate(min_price=Min('offerings__price')).get(id=component.id)
 
             component_serialized = component_serializers[component_type](full_component)
             extended_data = { 'selected_offering': OfferingSerializer(offering).data }
