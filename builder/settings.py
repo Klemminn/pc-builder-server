@@ -35,6 +35,7 @@ ALLOWED_HOSTS = [
     '0.0.0.0',
     '127.0.0.1',
     'api.pcbuilder.xyz',
+    'api.builder.vaktin.is',
 ]
 
 # Application definition
@@ -137,6 +138,7 @@ CORS_ORIGIN_WHITELIST = [
     'https://localhost:3000',
     'https://pcbuilder.xyz',
     'https://www.pcbuilder.xyz',
+    'https://builder.vaktin.is',
 ]
 
 
