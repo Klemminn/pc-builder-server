@@ -16,6 +16,7 @@ class OfferingAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     readonly_fields = ('created',)
     list_filter = (('content_type', admin.RelatedOnlyFieldListFilter,),)
+    list_per_page = 300
 
     def show_url(self, obj):
         return format_html("<a href='{url}' target='__blank'>{url}</a>", url=obj.url)
