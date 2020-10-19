@@ -86,7 +86,6 @@ class MotherboardChipset(models.Model):
 
     code = models.CharField(max_length=10, unique=True)
     name = models.CharField(max_length=10)
-    max_memory_frequency = models.IntegerField()
     memory_type = models.ForeignKey(MemoryType, related_name='motherboard_chipsets', to_field='code', on_delete=models.CASCADE)
     cpu_socket = models.ForeignKey(CpuSocket, related_name='motherboard_chipsets', to_field='code', on_delete=models.CASCADE)
 

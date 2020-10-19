@@ -33,7 +33,7 @@ class VendorAdmin(admin.ModelAdmin):
 
 @admin.register(MotherboardChipset)
 class MotherboardChipsetAdmin(admin.ModelAdmin):
-    list_display = ('id', 'code', 'name', 'max_memory_frequency', 'memory_type', 'cpu_socket', 'created',)
+    list_display = ('id', 'code', 'name', 'memory_type', 'cpu_socket', 'created',)
     search_fields = ('name',)
     readonly_fields = ('created',)
 
