@@ -8,8 +8,6 @@ from offerings.models import Offering
 def ImageField():
     return models.ImageField(
         upload_to=handle_upload,
-        null=True,
-        blank=True,
         validators=[validate_image_extension],
     )
 
