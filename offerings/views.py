@@ -8,7 +8,7 @@ from rest_framework_api_key.permissions import HasAPIKey
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Prefetch, Count, Min
 
-from .models import Offering, Retailer
+from .models import Offering, Retailer, Scrape
 from components.models import Motherboard, Cpu, CpuCooler, Memory, Gpu, Ssd, Hdd, Case, Psu
 from components.serializers import CpuSerializer, MemorySerializer, CpuCoolerSerializer, MotherboardSerializer, GpuSerializer, SsdSerializer, HddSerializer, CaseSerializer, PsuSerializer
 
@@ -155,7 +155,9 @@ class Update(APIView):
 
     def post(self, request, format=None):
         items = request.data
+        total_offerings_count = len(items)
         Offering.objects.update(disabled=True)
+        new_offerings_count = 0
         for item in items:
             url = item.get('url')
             price = item.get('price')
@@ -196,4 +198,10 @@ class Update(APIView):
                 content_type=content_type,
             )
             offering.save()
+            new_offerings_count += 1
+        scrape_instance = Scrape(
+            new_offerings=new_offerings_count,
+            total_offerings=total_offerings_count
+        )
+        scrape_instance.save()
         return Response()

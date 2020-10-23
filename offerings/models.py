@@ -37,3 +37,10 @@ class Offering(models.Model):
             models.Index(fields=['disabled',]),
         ]
 
+
+class Scrape(models.Model):
+    id = models.AutoField(primary_key=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    total_offerings = models.PositiveIntegerField()
+    new_offerings = models.PositiveIntegerField()
