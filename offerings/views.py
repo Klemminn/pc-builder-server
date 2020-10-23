@@ -199,6 +199,7 @@ class Update(APIView):
             )
             offering.save()
             new_offerings_count += 1
+
         scrape_instance = Scrape(
             new_offerings=new_offerings_count,
             total_offerings=total_offerings_count

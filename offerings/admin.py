@@ -1,6 +1,6 @@
 from django.utils.html import format_html
 from django.contrib import admin
-from .models import Retailer, Offering
+from .models import Retailer, Offering, Scrape
 
 @admin.register(Retailer)
 class RetailerAdmin(admin.ModelAdmin):
@@ -22,3 +22,8 @@ class OfferingAdmin(admin.ModelAdmin):
         return format_html("<a href='{url}' target='__blank'>{url}</a>", url=obj.url)
 
     show_url.short_description = "Url"
+
+@admin.register(Scrape)
+class ScrapeAdmin(admin.ModelAdmin):
+    list_display = ('id', 'total_offerings', 'new_offerings', 'created',)
+    readonly_fields = ('created',)
