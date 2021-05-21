@@ -19,7 +19,7 @@ class OfferingAdmin(admin.ModelAdmin):
     list_per_page = 300
 
     def show_url(self, obj):
-        return format_html("<a href='{url}' target='__blank'>{url}</a>", url=obj.url)
+        return format_html("<a href='{url}' target='_blank'>{url}</a>", url=obj.url)
 
     show_url.short_description = "Url"
 

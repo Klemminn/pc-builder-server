@@ -9,6 +9,6 @@ class BuildAdmin(admin.ModelAdmin):
     readonly_fields = ('created',)
 
     def show_url(self, obj):
-        return format_html("<a href='https://builder.vaktin.is/build/{code}' target='__blank'>Builder link</a>", code=obj.code)
+        return format_html("<a href='https://builder.vaktin.is/build/{code}' target='_blank'>Builder link</a>", code=obj.code)
 
     show_url.short_description = "Url"
