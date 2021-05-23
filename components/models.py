@@ -22,7 +22,7 @@ class MotherboardFormFactor(models.Model):
         return self.name
     
     class Meta:
-        ordering = ('code',)
+        ordering = ('name',)
 
 
 class PsuFormFactor(models.Model):
@@ -36,7 +36,7 @@ class PsuFormFactor(models.Model):
         return self.name
 
     class Meta:
-        ordering = ('code',)
+        ordering = ('name',)
 
 
 class MemoryType(models.Model):
@@ -50,7 +50,7 @@ class MemoryType(models.Model):
         return self.name
     
     class Meta:
-        ordering = ('code',)
+        ordering = ('name',)
 
 
 class CpuSocket(models.Model):
@@ -64,7 +64,7 @@ class CpuSocket(models.Model):
         return '%s - %s' % (self.code, self.name,)
     
     class Meta:
-        ordering = ('code',)
+        ordering = ('name',)
 
 
 class Vendor(models.Model):
@@ -78,7 +78,7 @@ class Vendor(models.Model):
         return self.name
     
     class Meta:
-        ordering = ('code',)
+        ordering = ('name',)
     
 
 class MotherboardChipset(models.Model):
@@ -94,7 +94,7 @@ class MotherboardChipset(models.Model):
         return self.name
     
     class Meta:
-        ordering = ('code',)
+        ordering = ('name',)
 
 
 class Cpu(models.Model):
@@ -179,7 +179,7 @@ class GpuVendor(models.Model):
         return self.name
 
     class Meta:
-        ordering = ('code',)
+        ordering = ('name',)
 
 class GpuType(models.Model):
     id = models.AutoField(primary_key=True)
@@ -193,7 +193,7 @@ class GpuType(models.Model):
         return self.name
 
     class Meta:
-        ordering = ('code',)
+        ordering = ('name',)
 
 
 class Gpu(models.Model):
@@ -224,7 +224,7 @@ class SsdType(models.Model):
         return self.name
     
     class Meta:
-        ordering = ('code',)
+        ordering = ('name',)
 
 
 class Ssd(models.Model):
