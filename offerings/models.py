@@ -30,6 +30,7 @@ class Offering(models.Model):
     price = models.IntegerField()
     url = models.URLField(unique=True)
     disabled = models.BooleanField(default=False)
+    ignored = models.BooleanField(default=False)
 
     class Meta:
         indexes = [

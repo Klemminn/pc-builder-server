@@ -19,7 +19,7 @@ def get_distinct_property(components, property):
     return flatten(components.values_list(property).order_by(property).distinct())
 
 def get_common(model):
-    components = model.objects.prefetch_related(Prefetch('offerings', queryset=Offering.objects.filter(disabled=False).order_by('price'))).filter(offerings__disabled=False)
+    components = model.objects.prefetch_related(Prefetch('offerings', queryset=Offering.objects.filter(disabled=False).filter(ignored=False).order_by('price'))).filter(offerings__disabled=False)
     items = components.annotate(min_price=Min('offerings__price'))
     vendors = get_distinct_property(components, 'vendor__name')
     retailers = get_distinct_property(components, 'offerings__retailer__name')

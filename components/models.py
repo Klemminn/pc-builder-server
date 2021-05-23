@@ -77,6 +77,9 @@ class Vendor(models.Model):
     def __str__(self):
         return self.name
     
+    class Meta:
+        ordering = ('code',)
+    
 
 class MotherboardChipset(models.Model):
     id = models.AutoField(primary_key=True)
@@ -89,6 +92,9 @@ class MotherboardChipset(models.Model):
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        ordering = ('code',)
 
 
 class Cpu(models.Model):
