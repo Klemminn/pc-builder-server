@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.html import format_html
 from .models import MotherboardFormFactor, PsuFormFactor, MemoryType, CpuSocket, Vendor, MotherboardChipset, Case, Psu, Motherboard, Cpu, CpuCooler, Memory, GpuVendor, GpuType, Gpu, SsdType, Ssd, Hdd
 
 @admin.register(MotherboardFormFactor)
@@ -51,9 +52,12 @@ class PsuAdmin(admin.ModelAdmin):
 
 @admin.register(Motherboard)
 class MotherboardAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'vendor', 'motherboard_form_factor', 'chipset', 'ram_slots', 'm2_slots', 'created',)
+    list_display = ('id', 'name', 'vendor', 'motherboard_form_factor', 'chipset', 'ram_slots', 'm2_slots', 'offerings', 'created',)
     search_fields = ('name',)
     readonly_fields = ('created',)
+
+    def offerings(self, obj):
+        return format_html(", ".join([format_html("<a href='{url}' target='_blank'>{retailer}</a>", url=k.url, retailer=k.retailer) for k in obj.offerings.filter(disabled=False)]))
 
 @admin.register(Cpu)
 class CpuAdmin(admin.ModelAdmin):

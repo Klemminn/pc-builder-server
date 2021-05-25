@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "C:\\Users\\Klemmi\\envs\\pc-builder\\Scripts\\python.exe"
+    "python.pythonPath": "C:\\Users\\Klemenz\\Envs\\pc-builder-server\\Scripts\\python.exe",
+    "python.linting.pylintEnabled": true
 }
