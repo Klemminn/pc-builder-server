@@ -153,8 +153,8 @@ class GetPsu(APIView):
 class GetMonitor(APIView):
     def get(self, request, format=None):
         common = get_common(Monitor)
-        resolutions = get_distinct_property(common.get('components'), 'monitor_resolution__resolution')
-        panels = get_distinct_property(common.get('components'), 'monitor_panel__panel')
+        resolutions = get_distinct_property(common.get('components'), 'resolution__resolution')
+        panels = get_distinct_property(common.get('components'), 'panel__panel')
         refresh_rates = get_distinct_property(common.get('components'), 'refresh_rate')
         sizes = get_distinct_property(common.get('components'), 'size')
         # We do freesync and gsync manually, instead of using get_distinct, since we want to filter out the null result
