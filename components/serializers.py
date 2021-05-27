@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Cpu, CpuCooler, Motherboard, Memory, Gpu, Ssd, Hdd, Case, Psu
+from .models import Cpu, CpuCooler, Monitor, Motherboard, Memory, Gpu, Ssd, Hdd, Case, Psu
 from offerings.serializers import OfferingSerializer
 
 class CpuSerializer(serializers.ModelSerializer):
@@ -100,5 +100,5 @@ class MonitorSerializer(serializers.ModelSerializer):
     min_price = serializers.IntegerField()
 
     class Meta:
-        model = Psu
+        model = Monitor
         fields = ('id', 'vendor', 'name', 'resolution', 'panel', 'size', 'gsync', 'freesync', 'curved', 'refresh_rate', 'offerings',)
