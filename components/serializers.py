@@ -94,8 +94,8 @@ class PsuSerializer(serializers.ModelSerializer):
 
 class MonitorSerializer(serializers.ModelSerializer):
     vendor = serializers.ReadOnlyField(source='vendor.name')
-    resolution = serializers.ReadOnlyField(source='monitor_resolution.resolution')
-    panel = serializers.ReadOnlyField(source='monitor_panel.panel')
+    resolution = serializers.ReadOnlyField(source='resolution.resolution')
+    panel = serializers.ReadOnlyField(source='panel.panel')
     offerings = OfferingSerializer(many=True, read_only=True)
     min_price = serializers.IntegerField()
 
