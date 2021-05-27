@@ -2,12 +2,11 @@ import re
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.contrib.contenttypes.models import ContentType
-from django.db.models import Prefetch, Count, Min
+from django.db.models import Prefetch, Min
 
 from .models import Build
 from offerings.models import Offering
-from components.serializers import CpuSerializer, CpuCoolerSerializer, MotherboardSerializer, MemorySerializer, GpuSerializer, SsdSerializer, HddSerializer, CaseSerializer, PsuSerializer
+from components.serializers import CpuSerializer, CpuCoolerSerializer, MonitorSerializer, MotherboardSerializer, MemorySerializer, GpuSerializer, SsdSerializer, HddSerializer, CaseSerializer, PsuSerializer
 from offerings.serializers import OfferingSerializer
 
 component_serializers = {
@@ -19,7 +18,8 @@ component_serializers = {
     'ssd': SsdSerializer,
     'hdd': HddSerializer,
     'case': CaseSerializer,
-    'psu': PsuSerializer
+    'psu': PsuSerializer,
+    'monitor': MonitorSerializer
 }
 
 def model_to_snake(model):

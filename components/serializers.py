@@ -91,3 +91,14 @@ class PsuSerializer(serializers.ModelSerializer):
     class Meta:
         model = Psu
         fields = ('id', 'vendor', 'name', 'watts', 'psu_form_factor', 'rating', 'pcie_six_pin', 'pcie_eight_pin', 'image', 'min_price', 'offerings',)
+
+class MonitorSerializer(serializers.ModelSerializer):
+    vendor = serializers.ReadOnlyField(source='vendor.name')
+    resolution = serializers.ReadOnlyField(source='monitor_resolution.resolution')
+    panel = serializers.ReadOnlyField(source='monitor_panel.panel')
+    offerings = OfferingSerializer(many=True, read_only=True)
+    min_price = serializers.IntegerField()
+
+    class Meta:
+        model = Psu
+        fields = ('id', 'vendor', 'name', 'resolution', 'panel', 'size', 'gsync', 'freesync', 'curved', 'refresh_rate', 'offerings',)

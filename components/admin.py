@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import MotherboardFormFactor, PsuFormFactor, MemoryType, CpuSocket, Vendor, MotherboardChipset, Case, Psu, Motherboard, Cpu, CpuCooler, Memory, GpuVendor, GpuType, Gpu, SsdType, Ssd, Hdd
+from .models import Monitor, MonitorPanel, MonitorResolution, MotherboardFormFactor, PsuFormFactor, MemoryType, CpuSocket, Vendor, MotherboardChipset, Case, Psu, Motherboard, Cpu, CpuCooler, Memory, GpuVendor, GpuType, Gpu, SsdType, Ssd, Hdd
 
 def get_offerings_links(obj):
     return format_html(", ".join([format_html("<a href='{url}' target='_blank'>{retailer}</a>", url=k.url, retailer=k.retailer) for k in obj.offerings.filter(disabled=False)]))
@@ -136,6 +136,27 @@ class SsdAdmin(admin.ModelAdmin):
 @admin.register(Hdd)
 class HddAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'vendor', 'format', 'capacity', 'offerings', 'created',)
+    search_fields = ('name',)
+    readonly_fields = ('created',)
+
+    def offerings(self, obj):
+        return get_offerings_links(obj)
+
+@admin.register(MonitorResolution)
+class MonitorResolutionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'resolution', 'created',)
+    search_fields = ('resolution',)
+    readonly_fields = ('created',)
+
+@admin.register(MonitorPanel)
+class MonitorPanelAdmin(admin.ModelAdmin):
+    list_display = ('id', 'panel', 'created',)
+    search_fields = ('panel',)
+    readonly_fields = ('created',)
+
+@admin.register(Monitor)
+class MonitorAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'vendor', 'size', 'resolution', 'panel', 'refresh_rate', 'curved', 'gsync', 'freesync', 'offerings', 'created',)
     search_fields = ('name',)
     readonly_fields = ('created',)
 

@@ -9,8 +9,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import Prefetch, Count, Min
 
 from .models import Offering, Retailer, Scrape
-from components.models import Motherboard, Cpu, CpuCooler, Memory, Gpu, Ssd, Hdd, Case, Psu
-from components.serializers import CpuSerializer, MemorySerializer, CpuCoolerSerializer, MotherboardSerializer, GpuSerializer, SsdSerializer, HddSerializer, CaseSerializer, PsuSerializer
+from components.models import Monitor, Motherboard, Cpu, CpuCooler, Memory, Gpu, Ssd, Hdd, Case, Psu
+from components.serializers import CpuSerializer, MemorySerializer, CpuCoolerSerializer, MonitorSerializer, MotherboardSerializer, GpuSerializer, SsdSerializer, HddSerializer, CaseSerializer, PsuSerializer
 
 def flatten(listable):
     return list(chain(*listable))
@@ -150,6 +150,26 @@ class GetPsu(APIView):
             'items': PsuSerializer(common.get('items'), many=True).data,
         })
 
+class GetMonitor(APIView):
+    def get(self, request, format=None):
+        common = get_common(Monitor)
+        resolutions = get_distinct_property(common.get('components'), 'monitor_resolution__resolution')
+        panels = get_distinct_property(common.get('components'), 'monitor_panel__panel')
+        refresh_rates = get_distinct_property(common.get('components'), 'watts')
+        # We do freesync and gsync manually, instead of using get_distinct, since we want to filter out the null result
+        freesync = flatten(common.get('components').filter(freesync__isnull=False).values_list('freesync').order_by('freesync').distinct())
+        gsync = flatten(common.get('components').filter(gsync__isnull=False).values_list('gsync').order_by('gsync').distinct())
+        return Response({
+            'vendor': common.get('vendors'),
+            'retailer': common.get('retailers'),
+            'resolution': resolutions,
+            'panel': panels,
+            'freesync': freesync,
+            'gsync': gsync,
+            'refresh_rate': refresh_rates,
+            'items': MonitorSerializer(common.get('items'), many=True).data,
+        })
+
 class Update(APIView):
     permission_classes = [HasAPIKey,]
 
@@ -190,6 +210,8 @@ class Update(APIView):
                 content_type = ContentType.objects.get_for_model(Ssd)
             elif (component == 'hdd'):
                 content_type = ContentType.objects.get_for_model(Hdd)
+            elif (component == 'monitor'):
+                content_type = ContentType.objects.get_for_model(Monitor)
             offering = Offering(
                 name=name,
                 url=url,

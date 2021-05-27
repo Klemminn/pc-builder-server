@@ -302,3 +302,60 @@ class Psu(models.Model):
 
     def __str__(self):
         return '%s. %s - %sW' % (self.id, self.name, self.watts,)
+
+class MonitorResolution(models.Model):
+    id = models.AutoField(primary_key=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    resolution = models.CharField(max_length=12, unique=True)
+    
+    def __str__(self):
+        return self.resolution
+    
+    class Meta:
+        ordering = ('resolution',)
+
+class MonitorPanel(models.Model):
+    id = models.AutoField(primary_key=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    panel = models.CharField(max_length=12, unique=True)
+    
+    def __str__(self):
+        return self.panel
+    
+    class Meta:
+        ordering = ('panel',)
+
+class Monitor(models.Model):
+    id = models.AutoField(primary_key=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    name = models.CharField(max_length=100)
+    vendor = models.ForeignKey(Vendor, related_name='monitors', to_field='code', on_delete=models.CASCADE)
+    size = models.FloatField()
+
+    resolution = models.ForeignKey(MonitorResolution, related_name='monitors', to_field='resolution', on_delete=models.CASCADE)
+    panel = models.ForeignKey(MonitorPanel, related_name='monitors', to_field='panel', on_delete=models.CASCADE)
+    refresh_rate = models.IntegerField()
+    curved = models.BooleanField(default=False)
+
+    GSYNC_CHOICES = [
+        ('G-Sync', 'G-Sync'),
+        ('G-Sync Ultimate', 'G-Sync Ultimate'),
+        ('G-Sync Compatible', 'G-Sync Compatible'),
+    ]
+    gsync = models.CharField(max_length=30, choices=GSYNC_CHOICES, null=True, blank=True)
+    FREESYNC_CHOICES = [
+        ('FreeSync', 'FreeSync'),
+        ('FreeSync Premium', 'FreeSync Premium'),
+        ('FreeSync Premium Pro', 'FreeSync Premium Pro'),
+    ]
+    freesync = models.CharField(max_length=30, choices=FREESYNC_CHOICES, null=True, blank=True)
+
+
+    image = ImageField()
+    offerings = GenericRelation(Offering)
+
+    def __str__(self):
+        return '%s. %s - %s' % (self.id, self.name,)
