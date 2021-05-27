@@ -101,4 +101,4 @@ class MonitorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Monitor
-        fields = ('id', 'vendor', 'name', 'resolution', 'panel', 'size', 'gsync', 'freesync', 'curved', 'refresh_rate', 'offerings',)
+        fields = ('id', 'vendor', 'name', 'resolution', 'panel', 'size', 'gsync', 'freesync', 'curved', 'refresh_rate', 'image', 'min_price', 'offerings',)
