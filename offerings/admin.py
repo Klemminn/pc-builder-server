@@ -1,6 +1,7 @@
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
+from django.db.models import Q
 from .models import Retailer, Offering, Scrape
 
 @admin.register(Retailer)
@@ -17,7 +18,7 @@ class OfferingIgnoredFilter(admin.SimpleListFilter):
 
     def lookups(self, request, model_admin):
         return (
-            ('ignored', _('Ignored')),
+            ('ignored_or_disabled', _('Ignored or Disabled')),
         )
     
     """Choices supplied to remove the "All" Option"""
@@ -30,16 +31,16 @@ class OfferingIgnoredFilter(admin.SimpleListFilter):
             }
 
     def queryset(self, request, queryset):
-        if self.value() == 'ignored':
-            return queryset.filter(ignored=True)
-        return queryset.filter(ignored=False)
+        if self.value() == 'ignored_or_disabled':
+            return queryset.filter(Q(ignored=True) | Q(disabled=True))
+        return queryset.filter(ignored=False).filter(disabled=False)
 
 
 @admin.register(Offering)
 class OfferingAdmin(admin.ModelAdmin):
     list_display = ('id', 'retailer', 'name', 'price', 'content_type', 'object_id', 'content_object', 'show_url', 'disabled', 'ignored', 'created',)
     list_display_links = ('id', 'name',)
-    list_editable = ('object_id', 'disabled', 'ignored', )
+    list_editable = ('object_id', 'ignored', )
     search_fields = ('name',)
     readonly_fields = ('created',)
     list_filter = (('content_type', admin.RelatedOnlyFieldListFilter,),OfferingIgnoredFilter,)
