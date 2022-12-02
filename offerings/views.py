@@ -1,12 +1,10 @@
 from itertools import chain
 
-from django.shortcuts import render
-from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_api_key.permissions import HasAPIKey
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Prefetch, Count, Min
+from django.db.models import Prefetch, Min, Q
 
 from .models import Offering, Retailer, Scrape
 from components.models import Monitor, Motherboard, Cpu, CpuCooler, Memory, Gpu, Ssd, Hdd, Case, Psu
@@ -19,7 +17,7 @@ def get_distinct_property(components, property):
     return flatten(components.values_list(property).order_by(property).distinct())
 
 def get_common(model):
-    components = model.objects.prefetch_related(Prefetch('offerings', queryset=Offering.objects.filter(disabled=False).filter(ignored=False).order_by('price'))).filter(offerings__disabled=False).filter(offerings__ignored=False)
+    components = model.objects.prefetch_related(Prefetch('offerings', queryset=Offering.objects.filter(Q(disabled=False) | Q(ignored=False)).order_by('price'))).filter(Q(offerings__disabled=False) | Q(offerings__ignored=False))
     items = components.annotate(min_price=Min('offerings__price'))
     vendors = get_distinct_property(components, 'vendor__name')
     retailers = get_distinct_property(components, 'offerings__retailer__name')
